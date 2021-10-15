@@ -1,0 +1,14 @@
+name: 0_ajoutSeries
+title: 0_ajoutSeries
+username:
+account: mell421
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4243809
+bundleId: 4693288
+url: https://mell421.shinyapps.io/0_ajoutSeries/
+when: 1623176340.16096
+lastSyncTime: 1623176340.16096
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|app.R|appTab.R|test.Rmd|data

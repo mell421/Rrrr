@@ -1,0 +1,505 @@
+---
+title: "Wordcloud"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: yes
+  pdf_document:
+    toc: yes
+---
+```{r setup, include = FALSE}
+# LOAD
+suppressWarnings(source("./fct/sources.R"))
+
+
+# INSTALL
+#webshot::install_phantomjs(force = TRUE)
+# knitr::opts_chunk$set(cache = TRUE)
+# install.packages("Hmisc")
+
+# variables globales
+
+# wordcloud
+## delay webshot
+delayW <- 5
+## circle, cardioid, diamond, triangle-forward, triangle, pantagon
+forme <- "circle"
+myRemoveList <- c("conclu", "conclubis","conclucompi","conclucompibis" ,"eff","the","sem","mois","premderall","last48tri","last46","offset3","nbPageTri","nbPage","nbTpsPc","titre","na")
+myToSpaceList <- c("@","\\|","'<'","\\'","/")
+
+# FONCTIONS
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+removeAccentE <- content_transformer(function (x , pattern ) gsub(pattern, "e", x))
+removeAccentA <- content_transformer(function (x , pattern ) gsub(pattern, "a", x))
+removeC <- content_transformer(function (x , pattern ) gsub(pattern, "c", x))
+removeSpace <- content_transformer(function (x , pattern ) gsub(pattern, "", x))
+wc <- function(text){
+  TextDoc <- Corpus(VectorSource(text))
+  
+  TextDoc <- tm_map(TextDoc, toSpace, myToSpaceList)
+  TextDoc <- tm_map(TextDoc, content_transformer(tolower))
+  TextDoc <- tm_map(TextDoc, removeWords, myRemoveList)
+  TextDoc <- tm_map(TextDoc, removeNumbers)
+  TextDoc <- tm_map(TextDoc, removePunctuation)
+  TextDoc <- tm_map(TextDoc, stripWhitespace)
+  
+
+  # Build a term-document matrix
+  TextDoc_dtm <- TermDocumentMatrix(TextDoc)
+  dtm_m <- as.matrix(TextDoc_dtm)
+  # Sort by descearing value of frequency
+  dtm_v <- sort(rowSums(dtm_m),decreasing=TRUE)
+  dtm_d <- data.frame(word = names(dtm_v),freq=dtm_v)
+  return(dtm_d)
+}
+```
+
+
+### accueil
+```{r accueil, echo=FALSE}
+text <- data.frame(accueil())
+text <- text[2]
+
+tm <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 accueil",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","accueil_3.png", delay =delayW, vwidth = 700, vheight=700)
+    
+}
+# accueil ![](./accueil_3.png)
+suppressWarnings(tm(text))
+```
+
+### en cours
+```{r encours, echo=FALSE}
+text <- data.frame(listDesc.ec())
+text <- text[2]
+
+tm <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 en cours",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  
+  #dev.print(device = png, file = "encours_2.png", width = 600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","encours_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  # 
+}
+
+suppressWarnings(tm(text))
+```
+
+### recent
+```{r recent0, echo=FALSE}
+recent <- data.frame(aAccueil())
+text <- recent$Titre_1
+
+tm <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 recent",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  
+  #dev.print(device = png, file = "recent_2.png", width = 600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","recent_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  # 
+}
+
+suppressWarnings(tm(text))
+```
+
+### termine
+```{r termine, echo=FALSE}
+text <- data.frame(listDesc.ter())
+text <- text[2]
+
+tm <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 termine",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  
+  # dev.print(device = png, file = "termine_2.png", width = 600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","termine_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  # 
+}
+
+suppressWarnings(tm(text))
+```
+
+### copy
+```{r copy, echo=FALSE}
+text <- data.frame(copy())
+main <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 copy",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  
+  #dev.print(device = png, file = "copy_2.png", width=600)
+
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","copy_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+}
+
+suppressWarnings(main(text))
+```
+
+### pageappres
+```{r pageappres, echo=FALSE}
+text <- data.frame(pageappres())
+main <- function(text){
+  
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 pageappres",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  
+  #dev.print(device = png, file = "copy_2.png", width=600)
+
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","pageappres_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+}
+
+suppressWarnings(main(text))
+```
+
+### pageappressup
+```{r pageappressup, echo=FALSE}
+text <- data.frame(pageappressup())
+main <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 pageappressup",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  
+  #dev.print(device = png, file = "copy_2.png", width=600)
+
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","pageappressup_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+}
+
+suppressWarnings(main(text))
+```
+
+### conclu
+```{r conclu, echo=FALSE}
+text <- data.frame(aTestConclu())
+text <- text[2]
+main <- function(text){
+  
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 conclu",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  
+  #dev.print(device = png, file = "conclu_2.png", width = 600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","conclu_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  
+
+}
+
+suppressWarnings(main(text))
+```
+
+### conclubis
+```{r conclubis, echo=FALSE}
+text2 <- data.frame(aTestConcluBis())
+text <- text2[2]
+main <- function(text){
+  
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 conclubis",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  #dev.print(device = png, file = "conclubis_2.png", width = 600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","conclubis_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  
+
+}
+
+suppressWarnings(main(text))
+```
+
+### sem
+```{r sem, echo=FALSE}
+text2 <- data.frame(copy.sem())
+text <- text2[2]
+main <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 sem",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+#dev.print(device = png, file = "sem_2.png", width = 600)
+
+      my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","sem_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  
+
+}
+
+suppressWarnings(main(text))
+```
+
+### mois
+```{r mois, echo=FALSE}
+text2 <- data.frame(copy.mois())
+  text <- text2[2]
+main <- function(text){
+  
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 mois",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  #dev.print(device = png, file = "mois_2.png", width=600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","mois_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  # 
+
+}
+
+suppressWarnings(main(text))
+```
+
+### max
+```{r max, echo=FALSE}
+text2 <- copy.max()
+text <- text2[2]
+main <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(
+    dtm_d[1:20,]$freq, 
+    las = 2, 
+    names.arg = dtm_d[1:20,]$word,
+    col =brewer.pal(8, "Dark2"), 
+    main ="Top 20 max",
+    ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  #dev.print(device = png, file = "max_2.png", width = 600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","max_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  
+
+}
+
+suppressWarnings(main(text))
+```
+
+### eff
+```{r eff, echo=FALSE}
+text2 <- aEff()
+  text <- text2[2]
+main <- function(text){
+  
+  
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(
+    dtm_d[1:20,]$freq, 
+    las = 2, 
+    names.arg = dtm_d[1:20,]$word,
+    col =brewer.pal(8, "Dark2"), 
+    main ="Top 20 eff",
+    ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  #dev.print(device = png, file = "eff_2.png", width = 600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","eff_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  # 
+
+}
+
+suppressWarnings(main(text))
+```
+
+### resume
+```{r resume, echo=FALSE}
+text2 <- data.frame(aTestResume())
+text <- text2[2]
+main <- function(text){
+  dtm_d <- wc(text)
+  # Display the top 20 most frequent words
+  head(dtm_d, 30)
+
+  # Plot the most frequent words
+  barplot(dtm_d[1:20,]$freq, las = 2, names.arg = dtm_d[1:20,]$word,
+          col =brewer.pal(8, "Dark2"), main ="Top 20 resume",
+          ylab = "Word frequencies")
+
+  #generate word cloud
+  # set.seed(1234)
+  wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 1,max.words=1500, random.order=FALSE, rot.per=0.35,colors=brewer.pal(8, "Dark2"))
+  #dev.print(device = png, file = "resume_2.png", width = 600)
+  
+    my_graph <- wordcloud2(data = dtm_d, color = "random-light",backgroundColor ="black",shape=forme)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html","resume_3.png", delay =delayW, vwidth = 700, vheight=700)
+
+  # 
+
+}
+
+suppressWarnings(main(text))
+```
+
+### stats
+```{r stats, echo=FALSE}
+# by(data, data$category, summary)
+# Hmisc::describe(data)
+print("accueil")
+accue <- data.frame(accueil())
+summary(accue)
+Hmisc::describe(accue)
+print("copy script")
+cs <- data.frame(aCopyScript())
+summary(cs)
+Hmisc::describe(cs)
+```

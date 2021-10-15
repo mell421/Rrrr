@@ -1,0 +1,145 @@
+---
+title: "Graph"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+---
+```{r setup, include = FALSE}
+suppressWarnings(source("./fct/sources.R"))
+# knitr::opts_chunk$set(cache = TRUE)
+
+require(devtools)
+library(knitr)
+library(rmarkdown)
+library(wordcloud2)
+library(dplyr)
+suppressWarnings(library(tm))
+library(RWeka)
+library(ggplot2)
+```
+
+## 1gram acc
+```{r 1gram, echo=FALSE, warning=FALSE}
+
+data.sample <- data.frame(aAccueil())
+data.sample <- data.sample[2]
+main <- function(data.sample){
+  corp <- Corpus(VectorSource(data.sample))
+corp <- tm_map(corp, content_transformer(function(x, pattern) gsub(pattern, " ", x)), "[][!#$%()*,.:;<=>@^_-|~.{}]\"\'")
+corp <- tm_map(corp, content_transformer(tolower))
+corp <- tm_map(corp, removeNumbers)
+corp <- tm_map(corp, removePunctuation)
+corp <- tm_map(corp, stripWhitespace)
+# corp <- tm_map(corp, removeWords, c( 'this'))
+# corp <- tm_map(corp, removeWords, c( 'this', stopwords('english')))
+
+corpDF <-data.frame(text = get("content", corp), stringsAsFactors = FALSE)
+#  data.frame(text = unlist(sapply(corp, `[`, "content")), stringsAsFactors = FALSE)
+# create a fgeneric unction to create top n-grams
+findNGrams <- function(corp, grams) {
+        ngram <- NGramTokenizer(corp, Weka_control(min = grams, max = grams,delimiters = " \\r\\n\\t.,;:\"()?!"))
+        ngram <- data.frame(table(ngram))
+        ngram <- ngram[order(ngram$Freq, decreasing = TRUE),]
+        colnames(ngram) <- c("Words","Count")
+        ngram
+}
+# create n-grams.
+monoGrams   <- findNGrams(corp, 1)
+
+# number of ngrams to show in the graph
+n <- 20
+# Plotting of the various nGrams
+ggplot(monoGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("1-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(monoGrams, color = "random-light",backgroundColor ="black")
+
+
+}
+main(data.sample)
+```
+
+## 2gram acc
+```{r 2gram, echo=FALSE, warning=FALSE}
+
+data.sample <- data.frame(aAccueil())
+data.sample <- data.sample[2]
+main <- function(data.sample){
+  corp <- Corpus(VectorSource(data.sample))
+corp <- tm_map(corp, content_transformer(function(x, pattern) gsub(pattern, " ", x)), "[][!#$%()*,.:;<=>@^_-|~.{}]\"\'")
+corp <- tm_map(corp, content_transformer(tolower))
+corp <- tm_map(corp, removeNumbers)
+corp <- tm_map(corp, removePunctuation)
+corp <- tm_map(corp, stripWhitespace)
+# corp <- tm_map(corp, removeWords, c( 'this'))
+# corp <- tm_map(corp, removeWords, c( 'this', stopwords('english')))
+
+corpDF <-data.frame(text = get("content", corp), stringsAsFactors = FALSE)
+#  data.frame(text = unlist(sapply(corp, `[`, "content")), stringsAsFactors = FALSE)
+# create a fgeneric unction to create top n-grams
+findNGrams <- function(corp, grams) {
+        ngram <- NGramTokenizer(corp, Weka_control(min = grams, max = grams,delimiters = " \\r\\n\\t.,;:\"()?!"))
+        ngram <- data.frame(table(ngram))
+        ngram <- ngram[order(ngram$Freq, decreasing = TRUE),]
+        colnames(ngram) <- c("Words","Count")
+        ngram
+}
+# create n-grams.
+biGrams     <- findNGrams(corp, 2)
+
+ 
+
+# number of ngrams to show in the graph
+n <- 20
+# Plotting of the various nGrams
+
+ggplot(biGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("2-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(biGrams, color = "random-light",backgroundColor ="black")
+
+}
+main(data.sample)
+```
+
+## 3gram acc
+```{r 3gram, echo=FALSE, warning=FALSE}
+
+data.sample <- data.frame(aAccueil())
+data.sample <- data.sample[2]
+main <- function(data.sample){
+  corp <- Corpus(VectorSource(data.sample))
+corp <- tm_map(corp, content_transformer(function(x, pattern) gsub(pattern, " ", x)), "[][!#$%()*,.:;<=>@^_-|~.{}]\"\'")
+corp <- tm_map(corp, content_transformer(tolower))
+corp <- tm_map(corp, removeNumbers)
+corp <- tm_map(corp, removePunctuation)
+corp <- tm_map(corp, stripWhitespace)
+# corp <- tm_map(corp, removeWords, c( 'this'))
+# corp <- tm_map(corp, removeWords, c( 'this', stopwords('english')))
+
+corpDF <-data.frame(text = get("content", corp), stringsAsFactors = FALSE)
+#  data.frame(text = unlist(sapply(corp, `[`, "content")), stringsAsFactors = FALSE)
+# create a fgeneric unction to create top n-grams
+findNGrams <- function(corp, grams) {
+        ngram <- NGramTokenizer(corp, Weka_control(min = grams, max = grams,delimiters = " \\r\\n\\t.,;:\"()?!"))
+        ngram <- data.frame(table(ngram))
+        ngram <- ngram[order(ngram$Freq, decreasing = TRUE),]
+        colnames(ngram) <- c("Words","Count")
+        ngram
+}
+# create n-grams.
+triGrams    <- findNGrams(corp, 3)
+
+ 
+
+# number of ngrams to show in the graph
+n <- 20
+# Plotting of the various nGrams
+
+ggplot(triGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("3-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(triGrams, color = "random-light",backgroundColor ="black")
+
+}
+main(data.sample)
+```

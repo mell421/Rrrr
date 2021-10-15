@@ -1,0 +1,62 @@
+Langage,Nombres de Paradigmes,Concurrente,Par contrainte,Par flux de données,Déclarative,Distribuée,Fonctionnelle,Métaprogrammation,Générique,Impérative,Logique,Réfléchissant,Orienté-objet,Pipelines de programmation,Visuelle,Règles de base,Autres paradigmes
+Ada,5,Oui,Non,Non,Non,Oui,Non,Non,Oui,Oui,Non,Non,Oui,Non,Non,Non,Non
+ALF,2,Non,Non,Non,Non,Non,Oui,Non,Non,Non,Oui,Non,Non,Non,Non,Non,Non
+AmigaE,2,Non,Non,Non,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+APL,3,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non,Non,Non,Tableau
+BETA ,3,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+C++,7,Oui,Bibliothèque,Bibliothèque,Bibliothèque,Bibliothèque,Oui,Oui,Oui,Oui,Bibliothèque,Bibliothèque,Oui,Oui,Non,Bibliothèque,Tableau
+C#,6,Oui,Non,Bibliothèque,Non,Non,Oui,Non,Oui,Oui,Non,Oui,Oui,Non,Non,Non,Non
+ChucK,3,Oui,Non,Non,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+Claire,2,Non,Non,Non,Non,Non,Oui,Non,Non,Non,Non,Non,Oui,Non,Non,Non,Non
+Common Lisp,5,Bibliothèque,Bibliothèque,Bibliothèque,Oui,Bibliothèque,Oui,Oui,Oui,Oui,Bibliothèque,Oui,Oui,Bibliothèque,Non,Bibliothèque,LispWorks
+Curl,5,Non,Non,Non,Non,Non,Oui,Non,Oui,Oui,Non,Oui,Oui,Non,Non,Non,Non
+Curry,4,Oui,Oui,Non,Non,Non,Oui,Non,Non,Non,Oui,Non,Non,Non,Non,Non,Non
+D,6,Oui,Non,Non,Non,Non,Oui,Oui,Oui,Oui,Non,Non,Oui,Non,Non,Non,Non
+Dylan,3,Non,Non,Non,Non,Non,Oui,Non,Non,Non,Non,Oui,Oui,Non,Non,Non,Non
+E,3,Oui,Non,Non,Non,Oui,Non,Non,Non,Non,Non,Non,Oui,Non,Non,Non,Non
+ECMAScript| (ActionScript| E4X| JavaScript| JScript),4,partial,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Oui,Oui,Non,Non,Non,reactive
+Embarcadero Delphi,3,Non,Non,Non,Non,Non,Non,Non,Oui,Oui,Non,Non,Oui,Non,Non,Non,Non
+Erlang,3,Oui,Non,Non,Non,Oui,Oui,Non,Non,Non,Non,Non,Non,Oui,Non,Non,Non
+Elixir,4,Oui,Non,Non,Non,Oui,Oui,Oui,Non,Non,Non,Non,Non,Oui,Non,Non,Non
+Elm,6,Oui,Non,Oui,Oui,Non,Oui,Non,Oui,Non,Non,Non,Non,Oui,Non,Non,reactive
+F#,7,Oui,Non,Bibliothèque,Oui,Non,Oui,Non,Oui,Oui,Non,Oui,Oui,Non,Non,Non,reactive
+Falcon,4,Non,Non,Non,Non,Non,Oui,Oui,Non,Non,Non,Oui,Oui,Non,Non,Non,Non
+Fortran,4,Oui,Non,Non,Non,Non,Oui,Non,Oui,Non,Non,Non,Oui,Non,Non,Non,Tableau
+Go,4,Oui,Non,Non,Non,Non,Non,Non,Non,Oui,Non,Oui,Non,Oui,Non,Non,Non
+Haskell,2,Oui,Bibliothèque,Non,Oui,Bibliothèque,Oui,Non,Oui,Oui,Non,Non,Non,Non,Oui,Non,reactive
+Io,4,Oui,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+J,3,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+Java,6,Oui,Bibliothèque,Bibliothèque,Non,Non,Oui,Non,Oui,Oui,Non,Oui,Oui,Non,Non,Non,Non
+Julia,9,Oui,Bibliothèque,Bibliothèque,Bibliothèque,Oui,Oui,Oui,Oui,Oui,Bibliothèque,Oui,Oui,Oui,Non,Bibliothèque,Multiple dispatch|Array (multi-dimensional)
+Kotlin,8,Oui,Non,Non,Non,Non,Oui,Oui,Oui,Oui,Non,Oui,Oui,Oui,Non,Non,Non
+LabVIEW,4,Oui,Non,Oui,Non,Non,Non,Non,Non,Non,Non,Non,Oui,Non,Oui,Non,Non
+Lava,2,Non,Non,Non,Non,Non,Non,Non,Non,Non,Non,Non,Oui,Non,Oui,Non,Non
+Leda,4,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Oui,Non,Oui,Non,Non,Non,Non
+LispWorks,9,Oui,Non,Non,Non,Oui,Oui,Oui,Non,Oui,Oui,Oui,Oui,Non,Non,Oui,Non
+Lua,3,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+MATLAB,6,Toolbox,Toolbox,Oui,Non,Toolbox,Non,Oui,Oui,Non,Non,Oui,Oui,Non,Oui,Non,Tableau
+Nemerle,7,Oui,Non,Non,Non,Non,Oui,Oui,Oui,Oui,Non,Oui,Oui,Non,Non,Non,Non
+Object Pascal,4,Oui,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+OCaml,4,Non,Non,Non,Non,Non,Oui,Non,Oui,Oui,Non,Non,Oui,Non,Non,Non,Non
+Oz,9,Oui,Oui,Oui,Non,Oui,Oui,Non,Non,Oui,Oui,Non,Oui,Non,Non,Oui,Non
+Perl ,8,Oui,Bibliothèque,Oui,Non,Non,Oui,Oui,Non,Oui,Non,Oui,Oui,Oui,Non,Non,Non
+Perl6,10,Oui,Oui,Oui,Non,Bibliothèque,Oui,Oui,Oui,Oui,Non,Oui,Oui,Oui,Non,Non,Multiple dispatch| lazy lists| reactive.
+PHP,4,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Oui,Oui,Non,Non,Non,Non
+Poplog,3,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Oui,Non,Non,Non,Non,Non,Non
+Prograph,3,Non,Non,Oui,Non,Non,Non,Non,Non,Non,Non,Non,Oui,Non,Oui,Non,Non
+Python,5,Bibliothèque,Bibliothèque,Non,Non,Bibliothèque,Partiel,Oui,Oui,Oui,Bibliothèque,Oui,Oui,Non,Non,Non,structured
+R,4,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Oui,Oui,Oui,Non,Non,Tableau
+Racket,6,Non,Non,Non,Non,Non,Oui,Oui,Non,Oui,Oui,Oui,Oui,Non,Non,Non,Non
+ROOP,3,Non,Non,Non,Non,Non,Non,Non,Non,Oui,Oui,Non,Non,Non,Non,Oui,Non
+Ruby,4,Non,Non,Non,Non,Oui,Oui,Non,Non,Oui,Non,Oui,Oui,Non,Non,Non,Non
+Rust,6,Oui,Non,Non,Non,Non,Oui,Oui,Oui,Oui,Non,Non,Oui,Non,Non,Non,linear| affline| and ownership types
+Sather,2,Non,Non,Non,Non,Non,Oui,Non,Non,Non,Non,Non,Oui,Non,Non,Non,Non
+Scala,9,Oui,Non,Oui,Oui,Non,Oui,Oui,Oui,Oui,Non,Oui,Oui,Non,Non,Non,Non
+Simula,2,Non,Non,Non,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+SISAL,3,Oui,Non,Oui,Non,Non,Oui,Non,Non,Non,Non,Non,Non,Non,Non,Non,Non
+Spreadsheets,2,Non,Non,Non,Non,Non,Oui,Non,Non,Non,Non,Non,Non,Non,Oui,Non,Non
+Swift,3,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,block-structured
+Tcl with Snit extension ,3,Non,Non,Non,Non,Non,Oui,Non,Non,Oui,Non,Non,Oui,Non,Non,Non,Non
+Visual Basic .NET,6,Oui,Non,Bibliothèque,Non,Non,Oui,Non,Oui,Oui,Non,Oui,Oui,Non,Non,Non,reactive
+Windows PowerShell,6,Non,Non,Non,Non,Non,Oui,Non,Oui,Oui,Non,Oui,Oui,Oui,Non,Non,Non
+Wolfram Language & Mathematica,13,Oui,Oui,Oui,Oui,Oui,Oui,Oui,Oui,Oui,Oui,Oui,Oui,Non,Non,Oui,Knowledge Based

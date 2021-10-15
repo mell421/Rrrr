@@ -1,0 +1,14 @@
+name: "my-website"
+navbar:
+  title: "My Website"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Wordcloud"
+      href: wordcloud.html
+    - text: "Listes"
+      href: listes.html
+    - text: "Networks"
+      href: networks.html
+    - text: "About"
+      href: about.html

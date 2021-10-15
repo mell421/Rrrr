@@ -1,0 +1,22 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+
+# png
+_site/*.png
+./*.png
+figure/*.png
+_site/figure/*.png
+
+# cache
+*_cache/*
+_site/cache/*
+./cache/*
+*_cache/*
+
+#other
+*.rdx
+*.rdb
+
+wordcloud_files/figure-html/*-*.png

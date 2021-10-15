@@ -1,0 +1,16 @@
+name: "my-website"
+navbar:
+  title: "Series and co"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Graph"
+      href: graph.html
+    - text: "Wordcloud"
+      href: wordcloud.html
+    - text: "Listes"
+      href: listes.html
+    - text: "Networks"
+      href: networks.html
+    - text: "About"
+      href: about.html

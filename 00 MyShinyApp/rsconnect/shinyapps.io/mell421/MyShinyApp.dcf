@@ -1,0 +1,14 @@
+name: MyShinyApp
+title: MyShinyApp
+username:
+account: mell421
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 4209684
+bundleId: 4694094
+url: https://mell421.shinyapps.io/MyShinyApp/
+when: 1623190851.0274
+lastSyncTime: 1623190851.0274
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|ajout.R|appTab.R|test.Rmd

@@ -1,0 +1,520 @@
+---
+title: "wordcloud"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    social: menu
+runtime: shiny
+---
+
+```{r setup, include=FALSE}
+# LIBRARY
+library(flexdashboard)
+# library(shiny)
+library(webshot)
+library("htmlwidgets")
+# webshot::install_phantomjs(force = TRUE)
+suppressWarnings(source("./fctR/sources.R"))
+
+# GLOBAL VARIABLES
+delayW <- 5
+
+dataFcts <- function(){
+  #II()
+  if(input$fct == "copy"){
+            copy <- data.frame(copy())
+            text <- copy
+        } else if(input$fct == "conclu"){
+            conclu <- data.frame(aTestConclu())
+            text <- conclu[2]
+        } else if(input$fct == "conclubis"){
+            conclubis <- data.frame(aTestConcluBis())
+            text <- conclubis[2]
+        } else if(input$fct == "sem"){
+            sem <- data.frame(copy.sem())
+            text <- sem[2]
+        } else if(input$fct == "mois"){
+            mois <- data.frame(copy.mois())
+            text <- mois[2]
+        } else if(input$fct == "max"){
+            max <- data.frame(aTestMax())
+            text <- max[2]
+        } else if(input$fct == "eff"){
+            eff <- data.frame(aTestEff())
+            text <- eff[2]
+        } else if(input$fct == "resume"){
+            resume <- data.frame(aTestResume())
+            text <- resume[2]
+        } else if(input$fct == "accueil"){
+            accueil <- data.frame(accueil())
+            text <- accueil[2]
+        } else if(input$fct == "en_cours"){
+            ec <- data.frame(listDesc.ec())
+            text <- ec[2]
+        } else if(input$fct == "termine"){
+            termine <- data.frame(listDesc.ter())
+            text <- termine[2]
+        } else if(input$fct == "recent"){
+            recent <- data.frame(aAccueil())
+            text <- recent$Titre_1
+        }  else if(input$fct == "pageappres"){
+            pa <- data.frame(pageappres())
+            text <- pa[2:16]
+        } else if(input$fct == "pageappressup"){
+            pas <- data.frame(pageappressup())
+            text <- pas[2:16]
+        } else if(input$fct == "file2"){
+                table <- suppressWarnings(gsheet2tbl(input$file2))
+                text <- data.frame(table)
+        } 
+  return(text)
+}
+
+II <- reactive({
+  accueil <- data.frame(accueil())
+  ec <- data.frame(listDesc.ec())
+  termine <- data.frame(listDesc.ter())
+  recent <- data.frame(aAccueil())
+  pa <- data.frame(pageappres())
+  pas <- data.frame(pageappressup())
+  copy <- data.frame(copy())
+  conclu <- data.frame(aTestConclu())
+  conclubis <- data.frame(aTestConcluBis())
+  sem <- data.frame(copy.sem())
+  mois <- data.frame(copy.mois())
+  max <- data.frame(aTestMax())
+  eff <- data.frame(aTestEff())
+  resume <- data.frame(aTestResume())
+})
+
+```
+
+Sidebar {.sidebar}
+=====================
+
+```{r}
+selectInput("fct","function:",
+                list("accueil"="accueil",
+                     "en_cours"="en_cours",
+                     "recent"="recent",
+                     "pageappres"="pageappres",
+                     "pageappressup"="pageappressup",
+                     "copy"="copy",
+                     "conclu"="conclu",
+                     "conclubis"="conclubis",
+                     "sem"="sem",
+                     "mois"="mois",
+                     "max"="max",
+                     "eff"="eff",
+                     "resume"="resume",
+                     "termine"="termine"
+                     # ,"sheet"="file2"
+                )
+    )
+
+    selectInput("form","form:",
+                list("circle"="circle",
+                  "cardioid"="cardioid",
+                  "diamond"="diamond",
+                "triangle-forward"="triangle-forward",
+                 "triangle"="triangle",
+                     "pentagon"="pentagon",
+                     "star"="star"
+                )
+    )
+    numericInput(inputId ="size1", 'min freq:', 1)
+    textInput(inputId ="color","color(random-[light-dark])", "random-light")
+
+    textInput(inputId ="bgc","backgroundcolor", "black")
+    conditionalPanel(condition = "input.fct == 'file2'",
+      textInput("file2", "your file address(sheets):","")
+                )
+```
+
+
+Dashboard
+===============
+
+Row
+---------------
+
+### wordcloud {data-width=1000}
+
+```{r}
+renderWordcloud2({
+        text <- dataFcts()
+        main <- function(text){
+            dtm_d <- wc(text)
+            # Display the top 20 most frequent words
+            head(dtm_d, 30)
+            dtm_d <- dtm_d %>% filter(freq >= input$size1)
+
+            #generate word cloud
+
+            wordcloud2(data = dtm_d, color = input$color, size=1,backgroundColor=input$bgc,shape=input$form)
+            
+        }
+        main(text)
+    })
+```
+
+
+
+```{r eval=FALSE, include=FALSE}
+### wordcloud.png {data-width=1000}
+renderImage({
+  text <- dataFcts()
+
+  main <- function(text){
+    dtm_d <- wc(text)
+    # Display the top 20 most frequent words
+    head(dtm_d, 30)
+    dtm_d <- dtm_d %>% filter(freq >= input$size1)
+
+    # webshot::install_phantomjs()
+    #generate word cloud => force = TRUE
+
+    my_graph <- wordcloud2(data = dtm_d, color = input$color, size=1,backgroundColor=input$bgc,shape=input$form)
+    saveWidget(my_graph,"tmp.html",selfcontained = F)
+    webshot("tmp.html",paste("./",input$fct,".png"), delay =5, vwidth = 700, vheight=700)
+
+
+    filename <- normalizePath(file.path(paste("./",input$fct,".png")))
+    list(src = filename)
+  }
+  main(text)
+},deleteFile = FALSE)
+```
+
+Row
+----------------
+
+### barplot {data-width=700}
+
+```{r}
+renderPlot({
+        text <- dataFcts()
+        max <- 20
+        dtm_d <- wc(text)
+        barplot(dtm_d[1:max,]$freq, las = 2, names.arg = dtm_d[1:max,]$word,
+                col =brewer.pal(8, "Dark2"), main = paste("Top",max,input$fct,sep = " "),
+                ylab = "Word frequencies")
+    })
+```
+
+### table {data-width=700}
+
+```{r}
+renderDataTable({
+        text <- dataFcts()
+
+        main <- function(text){
+            dtm_d <- wc(text)
+            # Display the top 20 most frequent words
+            dtm_d <- dtm_d %>% filter(freq >= input$size1)
+        }
+        main(text)
+    })
+```
+
+
+graph
+==================
+
+Row
+-------------------
+
+### param
+```{r}
+selectInput("period","",
+       list("sem"="sem",
+            "mois"="mois",
+            "recent"="recent",
+            "all"="all", 
+            "tous"="tous"
+            )
+       )
+
+selectInput("hms","",
+            list("hh"="hh",
+                "mm"="mm",
+                "ss"="ss"
+             )
+)
+```
+
+### temps
+
+```{r}
+renderPlot({
+        df <- data.frame(accueil())
+        if(input$hms == "hh"){
+            barplot(table(df$hh),
+                    las = 2,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="ep per hours",
+                    ylab = "nb ep",
+                    ylim=c(0,max(table(df$hh))*1.1)
+            )
+            box()
+        } else if(input$hms == "mm"){
+            barplot(table(df$minute),
+                    las = 2,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="ep per minutes",
+                    ylab = "nb ep",
+                    ylim=c(0,max(table(df$minute))*1.1)
+            )
+            box()
+        } else if(input$hms == "ss"){
+            barplot(table(df$sec),
+                    las = 2,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="ep per seconds",
+                    ylab = "nb ep",
+                    ylim=c(0,max(table(df$sec))*1.1)
+            )
+            box()
+        }
+
+
+    })
+```
+
+Row
+-----------------
+
+### EC 
+
+```{r}
+renderPlot({
+        CopyS <- data.frame(aECocc())
+        CopyS <- data.frame(CopyS[1:6])
+        CopyS <- na.omit(CopyS)
+        if(input$period == "sem"){
+            sem <- CopyS %>% filter(occ.ECS >= 1)
+            barplot(sem$occ.ECS,
+                    las = 2,
+                    names.arg = sem$en.cours,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="Top semaine",
+                    ylab = "Word frequencies",
+                    ylim=c(0,max(sem$occ.ECS)*1.1))
+        } else if(input$period == "mois"){
+            mois <- CopyS %>% filter(occ.ECM >= 1)
+            barplot(mois$occ.ECM,
+                    las = 2,
+                    names.arg = mois$en.cours,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="Top mois",
+                    ylab = "Word frequencies",
+                    ylim=c(0,max(mois$occ.ECM)*1.1))
+        } else if(input$period == "recent"){
+            rec <- CopyS %>% filter(occ.ECR >= 1)
+            barplot(rec$occ.ECR,
+                    las = 2,
+                    names.arg = rec$en.cours,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="Top recent",
+                    ylab = "Word frequencies",
+                    ylim=c(0,max(rec$occ.ECR)*1.1))
+        } else if(input$period == "all"){
+
+            barplot(CopyS$count,
+                    las = 2,
+                    names.arg = CopyS$tisa.en.cours,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="Top all",
+                    ylab = "Word frequencies",
+                    ylim=c(0,max(CopyS$count)*1.1))
+        } else if(input$period == "tous"){
+            barplot(t(as.matrix(CopyS[2:4])),
+                    las = 2,
+                    names.arg = CopyS$en.cours,
+                    col =c("red","blue","green"),
+                    main ="Top ---",
+                    ylab = "Word frequencies",
+                    beside = TRUE,
+                    ylim=c(0,max(CopyS$occ.ECR)*1.1))
+            legend('topright',fill=c("red","blue","green"),legend=c('recent','mois','sem'))
+        }
+
+    })
+```
+
+### TER 
+
+```{r}
+renderPlot({
+        CopyS <- data.frame(aECocc())
+        CopyS <- data.frame(CopyS[7:12])
+        CopyS <- na.omit(CopyS)
+        if(input$period == "sem"){
+            sem <- CopyS %>% filter(occ.FINIS >= 1)
+            barplot(sem$occ.FINIS,
+                    las = 2,
+                    names.arg = sem$fini,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="Top semaine",
+                    ylab = "Word frequencies",
+                    ylim=c(0,max(sem$occ.FINIS)*1.1))
+        } else if(input$period == "mois"){
+            mois <- CopyS %>% filter(occ.FINIM >= 1)
+            barplot(mois$occ.FINIM,
+                    las = 2,
+                    names.arg = mois$fini,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="Top mois",
+                    ylab = "Word frequencies",
+                    ylim=c(0,max(mois$occ.FINIM)*1.1))
+        } else if(input$period == "recent"){
+            barplot(CopyS$occ.FINIR,
+                    las = 2,
+                    names.arg = CopyS$fini,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="Top recent",
+                    ylab = "Word frequencies",
+                    ylim=c(0,max(CopyS$occ.FINIR)*1.1))
+        } else if(input$period == "all"){
+            barplot(CopyS$count_1,
+                    las = 2,
+                    names.arg = CopyS$tisa.terminée,
+                    col =brewer.pal(8, "Dark2"),
+                    main ="Top all",
+                    ylab = "Word frequencies",
+                    ylim=c(0,max(CopyS$count_1)*1.1))
+        } else if(input$period == "tous"){
+            barplot(t(as.matrix(CopyS[2:4])),
+                    las = 2,
+                    names.arg = CopyS$fini,
+                    col =c("red","blue","green"),
+                    main ="Top ---",
+                    ylab = "Word frequencies",
+                    beside = TRUE,
+                    ylim=c(0,max(CopyS$occ.FINIR)*1.1))
+            legend('topright',fill=c("red","blue","green"),legend=c('recent','mois','sem'))
+        }
+
+    })
+```
+
+
+nb
+==================
+
+Row
+-----------------
+
+### jour
+```{r}
+renderPlot({
+CopyS <-data.frame(aListes())
+  plot(CopyS$nb.jour,main="nb d'ep par jour",type = "l",col="red",xlab = "date",ylab = "nb ep",xlim=c(0,36))
+  #lines(CopyS$nb.jour,type = "l",col="red")
+    })
+```
+
+### semaine
+```{r}
+renderPlot({
+  CopyS <-data.frame(aListes())
+plot(CopyS$nb.sem,main="nb d'ep par semaine",type = "l",col="red",xlab = "date",ylab = "nb ep",xlim=c(0,36))
+  #lines(CopyS$nb.sem,type = "l",col="red")
+    })
+```
+
+Row
+--------------------
+
+### conclu1
+```{r}
+renderPlot({
+CopyS <-data.frame(copy.conclu())
+dataC <- data.frame(CopyS$nbCarConclu,CopyS$nbCarConcluBis,CopyS$jour_1,CopyS$date)
+plot(CopyS$nbCarConcluBis,main="nb de caracteres conclu",type = "l",col="red",xlab = "date",ylab = "nb car")
+  #lines(CopyS$nbCarConcluBis,type = "l",col="red")
+  lines(CopyS$nbCarConclu,type = "l",col="blue")
+    })
+```
+
+### conclu2
+```{r}
+renderPlot({
+CopyS <-data.frame(copy.conclu())
+dataC <- data.frame(CopyS$nbCarConclu,CopyS$nbCarConcluBis,CopyS$jour_1,CopyS$date)
+plot(CopyS$ncb,main="nb de saisons conclu",type = "l",col="red",xlab = "date",ylab = "nb ds conclu")
+  #lines(CopyS$ncb,type = "l",col="red")
+  lines(CopyS$nc,type = "l",col="blue")
+    })
+```
+
+### max
+```{r}
+renderPlot({
+CopyS <- data.frame(copy.max())
+CopyS <- na.omit(CopyS)
+  plot(CopyS$NBog,main="max",type = "l",col="red",xlab = "date",ylab = "nb")
+  #lines(CopyS$NBog,type = "l",col="red")
+  lines(CopyS$NBactuel,type = "l",col="blue")
+    })
+```
+
+regression
+====================
+
+Row
+-----------
+
+### 1
+```{r}
+renderPlot({
+  
+Prestige <- copy.conclu()
+    Prestige <- as_tibble(Prestige)
+    scatterplot(nbCarConclu~nbCarConcluBis
+, data=Prestige)
+    
+    })
+```
+
+### 2
+```{r}
+renderPlot({
+  
+Prestige <- copy.conclu()
+    Prestige <- as_tibble(Prestige)
+    
+    scatterplot(nc~ncb
+, data=Prestige)
+    
+    })
+```
+
+Row
+-----------
+
+### 3
+```{r}
+renderPlot({
+  
+Prestige <- copy.conclu()
+    Prestige <- as_tibble(Prestige)
+    
+    scatterplot(nbCarConclu~nc
+, data=Prestige)
+    
+    })
+```
+
+### 4
+```{r}
+renderPlot({
+  
+Prestige <- copy.conclu()
+    Prestige <- as_tibble(Prestige)
+    
+    scatterplot(nbCarConcluBis~ncb
+, data=Prestige)
+    
+    })
+```

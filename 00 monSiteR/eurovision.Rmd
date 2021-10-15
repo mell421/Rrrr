@@ -1,0 +1,33 @@
+---
+title: "eurovision"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library("gsheet")
+
+suppressWarnings(library(tidyverse))
+
+```
+
+
+
+```{r winner, echo=TRUE}
+
+esc <- esc()
+esc <- esc %>% filter(DF=="F",Place == 1) %>% select(annee:Points,-Country) %>% slice(1:10)
+esc
+```
+
+```{r all, echo=TRUE}
+esc <- function(){
+  df <- suppressWarnings(data.frame(gsheet2tbl('https://docs.google.com/spreadsheets/d/1BTbjPp-CPe_GQNEe-uKq8U3tLUocMM1YzvqPGZ0ScNE/edit#gid=380071250')))
+  return(df)
+}
+esc <- esc()
+esc <- esc %>% filter(DF=="F") %>% select(annee:Points,-Country) 
+head(esc)
+escdf <- esc %>% filter(Pays=="Italie") %>% select(annee,Pays,Place)
+ plot(escdf$Place,main="place",type = "l",col="red",xlab = "date",ylab = "place")
+```

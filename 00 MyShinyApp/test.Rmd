@@ -1,0 +1,382 @@
+---
+title: "R Notebook"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include = FALSE}
+    suppressWarnings(source("./fctR/sources.R"))
+
+suppressWarnings(library(tidyverse))
+# knitr::opts_chunk$set(cache = TRUE)
+library(wordcloud2)
+
+
+```
+
+```{r}
+# param
+a <- "bonj"
+b <- "jour"
+ab <- paste(a,b,sep = "")
+c <- list(substring(ab, 1, 1))
+d <- list()
+
+# mise en liste
+i <- 2
+long <- nchar(ab)
+while(i <= long){
+  if(i != length(ab)){
+    u <- substring(ab, i, i)
+    c <- append(c,u)
+    i <- i+1
+  } else {
+  }
+}
+j <- 1
+
+while(j <= length(c)){
+  k <- j + 1
+  ct <- 0
+  for(k in length(c)){
+    if((as.character(c[j])==as.character(c[k])) && (c[j]!='_')){
+      ct <- ct+1
+      c <- c[-k]
+    }
+  }
+  d <- append(d,ct)
+  j <- j+1
+}
+str(d)
+```
+## heat
+```{r heat}
+# The mtcars dataset:
+# data <- data.frame(eurodist)
+head(eurodist)
+data <- as.matrix(eurodist)
+
+# Default Heatmap
+heatmap(data, scale="column")
+```
+## netw
+```{r netw}
+# Libraries
+library(igraph)
+library(networkD3)
+
+# create a dataset:
+data <- data_frame(
+  from=c("A", "A", "B", "D", "C", "D", "E", "B", "C", "D", "K", "A", "M"),
+  to=c("B", "E", "F", "A", "C", "A", "B", "Z", "A", "C", "A", "B", "K")
+)
+
+# Plot
+p <- simpleNetwork(data, height="100px", width="100px")
+p
+```
+## maps
+```{r maps}
+# install.packages("leaflet")
+library(leaflet)
+#dataS <- read.csv(file = "./data/bornes-irve.csv")
+n <- leaflet(data = dataS) %>% addTiles() %>% setView( lng = 4.368, lat = 45.407, zoom = 5 ) %>% addMarkers(Xlongitude, Ylatitude, popup = ~as.character(ad_station), label = ~as.character(ad_station))
+n
+m <- leaflet() %>% 
+   addTiles() %>% 
+   setView( lng = 4.368, lat = 45.407, zoom = 5 ) %>% 
+   addProviderTiles("Esri.WorldImagery")
+# m
+```
+## gram
+```{r gram, echo=FALSE, warning=FALSE}
+#install.packages("RWeka")
+library(tm)
+library(RWeka)
+library(ggplot2)
+#library(SnowballC)
+library(wordcloud2)
+fct <- function(choix="accueil"){
+  if(choix == "accueil"){
+    data.sample <- data.frame(aAccueil())
+    data.sample <- data.sample[2]
+  } else if(choix == "copy"){
+    data.sample <- data.frame(copy())
+  } 
+
+
+corp <- Corpus(VectorSource(data.sample))
+corp <- tm_map(corp, content_transformer(function(x, pattern) gsub(pattern, " ", x)), "[][!#$%()*,.:;<=>@^_-|~.{}]\"\'")
+corp <- tm_map(corp, content_transformer(tolower))
+corp <- tm_map(corp, removeNumbers)
+corp <- tm_map(corp, removePunctuation)
+corp <- tm_map(corp, stripWhitespace)
+corp <- tm_map(corp, removeWords, c( 'this', stopwords('english')))
+
+
+corpDF <-data.frame(text = get("content", corp), stringsAsFactors = FALSE)
+#  data.frame(text = unlist(sapply(corp, `[`, "content")), stringsAsFactors = FALSE)
+# create a fgeneric unction to create top n-grams
+findNGrams <- function(corp, grams) {
+        ngram <- NGramTokenizer(corp, Weka_control(min = grams, max = grams,delimiters = " \\r\\n\\t.,;:\"()?!"))
+        ngram <- data.frame(table(ngram))
+        ngram <- ngram[order(ngram$Freq, decreasing = TRUE),]
+        colnames(ngram) <- c("Words","Count")
+        ngram
+}
+# create n-grams.
+monoGrams   <- findNGrams(corp, 1)
+biGrams     <- findNGrams(corp, 2)
+triGrams    <- findNGrams(corp, 3)
+
+ 
+
+# number of ngrams to show in the graph
+n <- 20
+# Plotting of the various nGrams
+ggplot(monoGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("1-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(monoGrams, color = "random-light",backgroundColor ="black")
+
+ggplot(biGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("2-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(biGrams, color = "random-light",backgroundColor ="black")
+
+ggplot(triGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("3-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(triGrams, color = "random-light",backgroundColor ="black")
+}
+fct("copy")
+```
+## gram acc
+```{r gram, echo=FALSE}
+#install.packages("RWeka")
+suppressWarnings(library(tm))
+library(RWeka)
+library(ggplot2)
+#library(SnowballC)
+library(wordcloud2)
+
+data.sample <- data.frame(aAccueil())
+data.sample <- data.sample[2]
+corp <- Corpus(VectorSource(data.sample))
+corp <- tm_map(corp, content_transformer(function(x, pattern) gsub(pattern, " ", x)), "[][!#$%()*,.:;<=>@^_-|~.{}]\"\'")
+corp <- tm_map(corp, content_transformer(tolower))
+corp <- tm_map(corp, removeNumbers)
+corp <- tm_map(corp, removePunctuation)
+corp <- tm_map(corp, stripWhitespace)
+# corp <- tm_map(corp, removeWords, c( 'this'))
+# corp <- tm_map(corp, removeWords, c( 'this', stopwords('english')))
+
+corpDF <-data.frame(text = get("content", corp), stringsAsFactors = FALSE)
+#  data.frame(text = unlist(sapply(corp, `[`, "content")), stringsAsFactors = FALSE)
+# create a fgeneric unction to create top n-grams
+findNGrams <- function(corp, grams, top) {
+        ngram <- NGramTokenizer(corp, Weka_control(min = grams, max = grams,delimiters = " \\r\\n\\t.,;:\"()?!"))
+        ngram <- data.frame(table(ngram))
+        ngram <- ngram[order(ngram$Freq, decreasing = TRUE),][1:top,]
+        colnames(ngram) <- c("Words","Count")
+        ngram
+}
+# create n-grams.
+monoGrams   <- findNGrams(corp, 1, 100)
+biGrams     <- findNGrams(corp, 2, 100)
+triGrams    <- findNGrams(corp, 3, 100)
+
+ 
+
+# number of ngrams to show in the graph
+n <- 20
+# Plotting of the various nGrams
+ggplot(monoGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("1-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(monoGrams, color = "random-light",backgroundColor ="black")
+
+ggplot(biGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("2-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(biGrams, color = "random-light",backgroundColor ="black")
+
+ggplot(triGrams[1:n,], aes(Words, Count))   + geom_bar(stat = "identity") + ggtitle("3-gram") +theme(plot.title = element_text(hjust = 0.5)) +  coord_flip()
+
+wordcloud2(triGrams, color = "random-light",backgroundColor ="black")
+
+```
+
+```{r stem}
+text1 <- "It has also been used as part of some web based search engines."
+text2 <- "The main processes in an retrieval system are document indexing, query processing, query
+evaluation and relevance feedback. Among these, efficient updating of the index is critical in
+large scale systems. "
+text3 <- "Clusters are created from short snippets of documents retrieved by web search engines which are
+as good as clusters created from the full text of web documents."
+main <- function(text){
+            TextDoc <- Corpus(VectorSource(text))
+
+            #Replacing "/", "@" and "|" with space
+            toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+            removeSpace <- content_transformer(function (x , pattern ) gsub(pattern, "", x))
+            TextDoc <- tm_map(TextDoc, toSpace, "/")
+            TextDoc <- tm_map(TextDoc, toSpace, "@")
+            TextDoc <- tm_map(TextDoc, toSpace, "\\|")
+            # Convert the text to lower case
+            TextDoc <- tm_map(TextDoc, content_transformer(tolower))
+            # Remove numbers
+            TextDoc <- tm_map(TextDoc, removeNumbers)
+            # Remove english common stopwords
+            TextDoc <- tm_map(TextDoc, removeWords, stopwords("english"))
+            # Remove your own stop word
+            # specify your custom stopwords as a character vector
+            TextDoc <- tm_map(TextDoc, removeWords, c())
+            # Remove punctuations
+            TextDoc <- tm_map(TextDoc, removePunctuation)
+            # Eliminate extra white spaces
+            TextDoc <- tm_map(TextDoc, stripWhitespace)
+            # Text stemming
+TextDoc <- tm_map(TextDoc, stemDocument)
+
+
+            # Build a term-document matrix
+            TextDoc_dtm <- TermDocumentMatrix(TextDoc)
+            dtm_m <- as.matrix(TextDoc_dtm)
+            # Sort by descearing value of frequency
+            dtm_v <- rowSums(dtm_m)
+            dtm_d <- data.frame(word = names(dtm_v) ,freq=dtm_v)
+            # Display the top 20 most frequent words
+            head(dtm_d, 30)
+            #dtm_d[1]
+            
+
+        }
+main(text2)
+```
+
+```{r sentiments}
+library("tm")
+library("SnowballC")
+library("wordcloud")
+library("RColorBrewer")
+library("syuzhet")
+library("ggplot2")
+
+# Read the text file from local machine , choose file interactively
+text <- "joy to the world"
+# text <- readLines(file.choose())
+# Load the data as a corpus
+TextDoc <- Corpus(VectorSource(text))
+
+ #Replacing "/", "@" and "|" with space
+toSpace <- content_transformer(function (x , pattern ) gsub(pattern, " ", x))
+TextDoc <- tm_map(TextDoc, toSpace, "/")
+TextDoc <- tm_map(TextDoc, toSpace, "@")
+TextDoc <- tm_map(TextDoc, toSpace, "\\|")
+# Convert the text to lower case
+TextDoc <- tm_map(TextDoc, content_transformer(tolower))
+# Remove numbers
+TextDoc <- tm_map(TextDoc, removeNumbers)
+# Remove english common stopwords
+TextDoc <- tm_map(TextDoc, removeWords, stopwords("english"))
+# Remove your own stop word
+# specify your custom stopwords as a character vector
+TextDoc <- tm_map(TextDoc, removeWords, c("s", "company", "team")) 
+# Remove punctuations
+TextDoc <- tm_map(TextDoc, removePunctuation)
+# Eliminate extra white spaces
+TextDoc <- tm_map(TextDoc, stripWhitespace)
+# Text stemming - which reduces words to their root form
+TextDoc <- tm_map(TextDoc, stemDocument)
+
+# Build a term-document matrix
+TextDoc_dtm <- TermDocumentMatrix(TextDoc)
+dtm_m <- as.matrix(TextDoc_dtm)
+# Sort by descearing value of frequency
+dtm_v <- sort(rowSums(dtm_m),decreasing=TRUE)
+dtm_d <- data.frame(word = names(dtm_v),freq=dtm_v)
+# Display the top 5 most frequent words
+head(dtm_d, 5)
+
+# Plot the most frequent words
+barplot(dtm_d[1:5,]$freq, las = 2, names.arg = dtm_d[1:5,]$word,
+        col ="lightgreen", main ="Top 5 most frequent words",
+        ylab = "Word frequencies")
+
+#generate word cloud
+set.seed(1234)
+wordcloud(words = dtm_d$word, freq = dtm_d$freq, min.freq = 5,
+          max.words=100, random.order=FALSE, rot.per=0.40, 
+          colors=brewer.pal(8, "Dark2"))
+
+# Find associations for words that occur at least 50 times
+findAssocs(TextDoc_dtm, terms = findFreqTerms(TextDoc_dtm, lowfreq = 50), corlimit = 0.25)
+
+# regular sentiment score using get_sentiment() function and method of your choice
+# please note that different methods may have different scales
+syuzhet_vector <- get_sentiment(text, method="syuzhet")
+# see the first row of the vector
+head(syuzhet_vector)
+# see summary statistics of the vector
+summary(syuzhet_vector)
+
+# bing
+bing_vector <- get_sentiment(text, method="bing")
+head(bing_vector)
+summary(bing_vector)
+#affin
+afinn_vector <- get_sentiment(text, method="afinn")
+head(afinn_vector)
+summary(afinn_vector)
+
+#compare the first row of each vector using sign function
+rbind(
+  sign(head(syuzhet_vector)),
+  sign(head(bing_vector)),
+  sign(head(afinn_vector))
+)
+
+# run nrc sentiment analysis to return data frame with each row classified as one of the following
+# emotions, rather than a score: 
+# anger, anticipation, disgust, fear, joy, sadness, surprise, trust 
+# It also counts the number of positive and negative emotions found in each row
+d<-get_nrc_sentiment(text)
+# head(d,10) - to see top 10 lines of the get_nrc_sentiment dataframe
+head (d,10)
+
+#transpose
+td<-data.frame(t(d))
+#The function rowSums computes column sums across rows for each level of a grouping variable.
+td_new <- data.frame(rowSums(td[2:253]))
+#Transformation and cleaning
+names(td_new)[1] <- "count"
+td_new <- cbind("sentiment" = rownames(td_new), td_new)
+rownames(td_new) <- NULL
+td_new2<-td_new[1:8,]
+#Plot One - count of words associated with each sentiment
+quickplot(sentiment, data=td_new2, weight=count, geom="bar", fill=sentiment, ylab="count")+ggtitle("Survey sentiments")
+
+#Plot two - count of words associated with each sentiment, expressed as a percentage
+barplot(
+  sort(colSums(prop.table(d[, 1:8]))), 
+  horiz = TRUE, 
+  cex.names = 0.7, 
+  las = 1, 
+  main = "Emotions in Text", xlab="Percentage"
+)
+
+```
+
+```{r corrplot}
+# install.packages("car")
+library(corrplot)
+Prestige <- iris3
+Prestige <- as_tibble(Prestige)
+M <- cor(Prestige)
+corrplot(M, method="circle")
+corrplot(M, method="square")
+corrplot(M, method="ellipse")
+corrplot(M, method="number")
+corrplot(M, method="shade")
+corrplot(M, method="color")
+corrplot(M, method="pie")
+corrplot(M, type="upper", order="hclust")
+
+```

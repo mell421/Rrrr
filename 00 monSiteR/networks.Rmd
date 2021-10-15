@@ -1,0 +1,79 @@
+---
+title: "networks"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    toc: true
+---
+```{r setup, include = FALSE}
+suppressWarnings(source("./fct/sources.R"))
+# knitr::opts_chunk$set(cache = TRUE)
+
+```
+
+## recent
+```{r network1, echo=FALSE}
+
+netw <- function(max=15){
+  
+df <- data.frame(listeCompl.ec())
+df <- df[1:max,]
+
+main <- function(){
+  ### CREATE NODES TABLE 
+get_random_names <- function(n) { 
+  unique_names <- distinct(df, en.cours, .keep_all = TRUE) 
+  index <- sample(1:nrow(unique_names), n, replace = FALSE) 
+  names <- unique_names[index, ] 
+  names 
+}
+
+nodes <- get_random_names(max)
+
+
+### CREATE LINKS TABLE 
+# Create source and target vectors 
+src <- sample(1:nrow(nodes), nrow(nodes)*2, replace = TRUE)  
+target <- sample(1:nrow(nodes), nrow(nodes)*2, replace = TRUE)
+
+# Merge vectors to form a single table 
+links <- data.frame(src, target)
+# write.csv(links,"network.csv")
+
+# Clean up 
+links <- data.frame(src, target) %>%  
+  filter(!(src == target)) 
+links <- unique(links[c("src", "target")])
+
+
+### PLOT NETWORK 
+# Type cast to tbl_graph object
+social_net_tbls <- tbl_graph(nodes = nodes, 
+                             edges = links, 
+                             directed = FALSE)
+
+# Create the network 
+social_net <- ggraph(social_net_tbls, layout = "stress") +
+  geom_node_point(size = 2) +                                         
+  geom_node_text(aes(label = en.cours), nudge_y = 0.05, nudge_x = 0.2)+ 
+  geom_edge_link() +
+  theme_void()
+
+# Render the network 
+  show(social_net)
+  # dev.print(device = png, file = "socialnet1.png", width = 600)
+}
+main()
+}
+
+netw(5)
+netw(6)
+netw(7)
+netw(8)
+netw(9)
+netw(10) 
+netw(15)
+
+```
+
