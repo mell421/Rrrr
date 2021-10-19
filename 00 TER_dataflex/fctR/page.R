@@ -156,7 +156,11 @@ aBLlist <- function(){
   return(table)
 }
 
-
+myChoice <- function(link){
+  table <- data.frame(suppressWarnings(gsheet2tbl(link)))
+  na.omit(table)
+  return(table)
+}
 
 
 # a <- function(){

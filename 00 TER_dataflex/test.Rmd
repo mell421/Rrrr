@@ -63,9 +63,9 @@ dataFcts <- function(){
         } else if(input$fct == "pageappressup"){
             pas <- data.frame(pageappressup())
             text <- pas[2:16]
-        } else if(input$fct == "file2"){
-                table <- suppressWarnings(gsheet2tbl(input$file2))
-                text <- data.frame(table)
+        } else if(input$fct == "sheets"){
+          mc <- data.frame(myChoice(input$sheets))
+                text <- mc
         } 
   return(text)
 }
@@ -108,7 +108,12 @@ selectInput("fct","function:",
                      "eff"="eff",
                      "resume"="resume",
                      "termine"="termine"
-                     # ,"sheet"="file2"
+                     ,"sheet"="sheets"
+                )
+    )
+    selectInput("param","param:",
+                list("non"="non",
+                  "oui"="oui"
                 )
     )
 
@@ -122,13 +127,16 @@ selectInput("fct","function:",
                      "star"="star"
                 )
     )
-    numericInput(inputId ="size1", 'min freq:', 1)
-    textInput(inputId ="color","color(random-[light-dark])", "random-light")
+    conditionalPanel(condition = "input.fct == 'sheets'",
+      textInput("sheets", "your file address(sheets):","")
+    )
+    conditionalPanel(condition = "input.param == 'oui'",
+      numericInput(inputId ="size1", 'min freq:', 1),
+      textInput(inputId ="color","color(random-[light-dark])", "random-light"),
 
-    textInput(inputId ="bgc","backgroundcolor", "black")
-    conditionalPanel(condition = "input.fct == 'file2'",
-      textInput("file2", "your file address(sheets):","")
-                )
+      textInput(inputId ="bgc","backgroundcolor", "black")
+    )
+    
 ```
 
 
