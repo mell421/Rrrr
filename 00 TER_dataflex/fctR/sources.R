@@ -42,6 +42,7 @@ loadMesPackages <- function(){
   library(dplyr)
   library('rsconnect')
   library(car)
+  require(vtable)
 }
 
 loadMesPackages()

@@ -156,12 +156,31 @@ aBLlist <- function(){
   return(table)
 }
 
+
+
 myChoice <- function(link){
   table <- data.frame(suppressWarnings(gsheet2tbl(link)))
   na.omit(table)
   return(table)
 }
 
+# -----------------------------------
+aURL <- function(){
+  table <- data.frame(suppressWarnings(gsheet2tbl('https://docs.google.com/spreadsheets/d/1HZydd6qo-GcQVqnwQnerHHnMEyR6faJXKN7Egkuqp4I/edit#gid=202069166')))
+  na.omit(table)
+  return(table)
+}
+z00 <- function(ligne){
+  table <- data.frame(aURL())[ligne,3]
+  table <- data.frame(suppressWarnings(gsheet2tbl(table)))
+  na.omit(table)
+  return(table)
+}
+z01 <- function(ligne){
+  table <- data.frame(aURL())[ligne,2]
+  na.omit(table)
+  return(table)
+}
 
 # a <- function(){
 #   table <- data.frame(suppressWarnings(gsheet2tbl('')))

@@ -136,6 +136,8 @@ selectInput("fct","function:",
 
       textInput(inputId ="bgc","backgroundcolor", "black")
     )
+    numericInput(inputId ="fctRes", 'fctRes:', 1)
+    renderText(z01(input$fctRes))
     
 ```
 
@@ -525,4 +527,67 @@ Prestige <- copy.conclu()
 , data=Prestige)
     
     })
+```
+
+summary
+====================
+
+Row
+-----------
+
+### 1
+```{r}
+renderPrint({
+  #renderPrint({
+    if(input$fct == "copy"){
+            text2 <- data.frame(copy())
+        } else if(input$fct == "conclu"){
+            text2 <- data.frame(aTestConclu())
+        } else if(input$fct == "conclubis"){
+            text2 <- data.frame(aTestConcluBis())
+        } else if(input$fct == "sem"){
+            text2 <- data.frame(copy.sem())
+        } else if(input$fct == "mois"){
+            text2 <- data.frame(copy.mois())
+        } else if(input$fct == "max"){
+            text2 <- data.frame(aTestMax())
+        } else if(input$fct == "eff"){
+            text2 <- data.frame(aTestEff())
+        } else if(input$fct == "resume"){
+            text2 <- data.frame(aTestResume())
+        } else if(input$fct == "accueil"){
+            text2 <- data.frame(accueil())
+        } else if(input$fct == "en_cours"){
+            text2 <- data.frame(listDesc.ec())
+        } else if(input$fct == "termine"){
+            text2 <- data.frame(listDesc.ter())
+        } else if(input$fct == "recent"){
+            text2 <- data.frame(aAccueil())
+        }  else if(input$fct == "pageappres"){
+            text2 <- data.frame(pageappres())
+        } else if(input$fct == "pageappressup"){
+            text2 <- data.frame(pageappressup())
+        } else if(input$fct == "sheets"){
+            text2 <- data.frame(myChoice(input$sheets))
+        } 
+    #st1 <- (st(text2))
+    #st1 <- data.frame(st1)
+    #return(st1)
+    summary(text2)
+  })
+```
+
+resume
+====================
+
+Row
+-----------
+
+```{r}
+renderPrint({
+  print(z01(input$fctRes))
+  print("              ")
+  print(summary(z00(input$fctRes)))
+  #print(st(z00(input$fctRes)))
+})
 ```
